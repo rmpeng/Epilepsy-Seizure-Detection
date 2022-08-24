@@ -113,7 +113,7 @@ def psd2(x, fs=1.0, window='hanning', nperseg=None, noverlap=None, nfft=None,
     fmax = f[np.argmax(P)]
     fmin = f[np.argmin(P)]
     # frequency percentiles
-    inds = [0]
+    inds = []
     Area = 100 * Area / Ptotal  # + 10 * np.finfo(np.float).eps
     for i in range(10, 101,10):
         inds.append(np.argmax(Area[inds[-1]:] >= i) + inds[-1])
