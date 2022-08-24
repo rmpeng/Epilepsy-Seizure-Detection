@@ -6,7 +6,7 @@
 import numpy as np
 import pandas as pd
 import pywt
-import segyio as segyio
+# import segyio as segyio
 from scipy.stats import kurtosis
 import statistics
 import scipy.signal

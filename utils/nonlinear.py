@@ -4,7 +4,7 @@
 
 # Authors: RM Peng <rmpeng19@gmail.com>
 import numpy
-import psd2 as psd
+import utils.psd2 as psd
 from scipy import signal, integrate
 
 def bin_power(X, Band, Fs):

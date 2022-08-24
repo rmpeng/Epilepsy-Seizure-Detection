@@ -9,7 +9,7 @@ import pandas as pd
 import itertools
 import math
 from scipy.stats import kurtosistest, skew
-
+# import antropy
 
 class timedomain:
    def __init__(self, eegData):
@@ -58,7 +58,8 @@ class timedomain:
 
    def zerocrossingrate(self,step = 5):
        cnt = 0
-       eegdata = self.data
+       eegdata = self.data.copy()
+       eegdata-=eegdata.mean()
        n_samples = len(eegdata)
        for i in range(n_samples - step):
 
@@ -84,7 +85,7 @@ class timedomain:
        mobility = diff1.std(ddof=0) / sigma
        # print('mob', mobility)
        diff2 = eeg.diff(periods=2).dropna()
-       complexity = diff2.std(ddof=0) / diff1.std(ddof=0)
+       complexity = mobility/(diff2.std(ddof=0) / diff1.std(ddof=0))
 
        return activity,mobility,complexity
 
@@ -95,9 +96,9 @@ class timedomain:
        power = 1/n_samples * sum(eegdata * eegdata.T)
        mean = 1/n_samples * sum(eegdata)
        sigma = eegdata.std(ddof=0)
-       d1 = 1/(n_samples -1) * sum(eegdata.diff().dropna())
+       d1 = 1/(n_samples -1) * sum(eegdata.diff().abs().dropna())
        nd1 = d1 / sigma
-       d2 = 1/(n_samples -1) * sum(eegdata.diff(periods=2).dropna())
+       d2 = 1/(n_samples -1) * sum(eegdata.diff(periods=2).abs().dropna())
        nd2 = d2 / sigma
 
        return power,mean,d1,  nd1, d2, nd2

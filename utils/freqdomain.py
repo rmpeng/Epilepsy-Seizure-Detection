@@ -9,7 +9,7 @@ import pandas as pd
 import itertools
 import math
 from scipy.stats import kurtosistest, skew
-import psd2 as psd
+import utils.psd2 as psd
 
 '''
        :param epoch - signal
@@ -27,8 +27,7 @@ class freqdomain:
 
    def psd_features(self):
        data = np.squeeze(self.data)  # 1*n
-       mpf, fmax, fmin, fmin, Ptotal = psd.psd2(data, fs = self.myfs)
-       return mpf, fmax, fmin, fmin, Ptotal
+       return psd.psd2(data, fs = self.myfs)
 
    def calcNormalizedFFT(self, lvl, nt):
        epoch = self.data
@@ -102,20 +101,8 @@ class freqdomain:
        return mean1,max1,min1,var1,mean2,max2,min2,var2,mean3,max3,min3,var3
 
    def main_freq(self,percent1= 0.3,percent2=0.5,percent3=0.9):
-       mpf, fmax, fmin, fmin, Ptotal = self.psd_features()
+       mpf, fmax, fmin, fpcntile, Ptotal = self.psd_features()
        mean1, max1, min1, var1, mean2, max2, min2, var2, mean3, max3, min3, var3= self.SEF(percent1=percent1,percent2=percent2,percent3=percent3)
-       freq_feature = [mpf, fmax, fmin, fmin, Ptotal,mean1, max1, min1, var1, mean2, max2, min2, var2, mean3, max3, min3, var3]
-
+       freq_feature = [mpf, fmax, fmin, Ptotal,mean1, max1, min1, var1, mean2, max2, min2, var2, mean3, max3, min3, var3]
+       freq_feature.extend(fpcntile)
        return freq_feature
-
-
-
-
-
-
-
-
-
-
-
-
