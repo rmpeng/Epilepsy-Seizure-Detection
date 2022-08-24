@@ -115,14 +115,14 @@ def psd2(x, fs=1.0, window='hanning', nperseg=None, noverlap=None, nfft=None,
     # frequency percentiles
     inds = [0]
     Area = 100 * Area / Ptotal  # + 10 * np.finfo(np.float).eps
-    for i in range(1, 101):
+    for i in range(10, 101,10):
         inds.append(np.argmax(Area[inds[-1]:] >= i) + inds[-1])
     fpcntile = f[inds]
 
     if show:
         _plot(x, fs, f, P, mpf, fmax,fmin, fpcntile, scales, xlim, units, ax)
 
-    return  mpf, fmax, fmin, fmin, Ptotal
+    return  mpf, fmax, fmin, fpcntile, Ptotal
 
 
 def _plot(x, fs, f, P, mpf, fmax, fpcntile, scales, xlim, units, ax):
