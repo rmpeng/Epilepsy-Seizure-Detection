@@ -6,6 +6,7 @@
 import numpy
 import utils.psd2 as psd
 from scipy import signal, integrate
+import pandas as pd
 
 def bin_power(X, Band, Fs):
     """Compute power in each frequency bin specified by Band from FFT result of
@@ -368,32 +369,13 @@ class nonlinear:
 
     def fisher_info(self, Tau, DE, W=None):
         X = self.data
-        """Compute SVD Entropy from either two cases below:
-        1. a time series X, with lag tau and embedding dimension dE (default)
-        2. a list, W, of normalized singular values of a matrix (if W is provided,
-        recommend to speed up.)
-        If W is None, the function will do as follows to prepare singular spectrum:
-            First, computer an embedding matrix from X, Tau and DE using pyeeg
-            function embed_seq():
-                        M = embed_seq(X, Tau, DE)
-            Second, use scipy.linalg function svd to decompose the embedding matrix
-            M and obtain a list of singular values:
-                        W = svd(M, compute_uv=0)
-            At last, normalize W:
-                        W /= sum(W)
-        Notes
-        -------------
-        To speed up, it is recommended to compute W before calling this function
-        because W may also be used by other functions whereas computing it here
-        again will slow down.
-        """
-
         if W is None:
             Y = embed_seq(X, Tau, DE)
             W = numpy.linalg.svd(Y, compute_uv=0)
             W /= sum(W)  # normalize singular values
-
-        return -1 * sum(W * numpy.log(W))
+        W_diff=pd.Series(W).diff().dropna().reset_index(drop=True)
+        W_shift = pd.Series(W[:-1])
+        return sum(W_diff*W_diff/W_shift)
 
     #largest Lyauponov exponent
     def LLE(self, tau, n, T):
